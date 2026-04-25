@@ -25,7 +25,13 @@ const DEMO_RESUMES: Resume[] = [
   },
 ]
 
-interface User { email: string; full_name: string; subscription_status: string }
+interface User {
+  email: string
+  full_name: string
+  subscription_status: string
+  subscription_id?: string
+  subscription_cancel_at?: number
+}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -40,7 +46,35 @@ export default function DashboardPage() {
       return
     }
     const u = JSON.parse(stored)
-    setUser(u)
+
+    // Check if returning from Stripe payment
+    const params = new URLSearchParams(window.location.search)
+    const sessionId = params.get('session_id')
+
+    if (sessionId && !u.subscription_id) {
+      // Fetch session details to get subscription ID
+      fetch(`/api/stripe/session-details?sessionId=${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.subscriptionId) {
+            // Update user with subscription ID and status
+            const updatedUser = {
+              ...u,
+              subscription_id: data.subscriptionId,
+              subscription_status: 'premium',
+            }
+            sessionStorage.setItem('cvglow_user', JSON.stringify(updatedUser))
+            setUser(updatedUser)
+
+            // Clean up URL
+            window.history.replaceState({}, '', '/dashboard')
+          }
+        })
+        .catch(err => console.error('Failed to get session details:', err))
+    } else {
+      setUser(u)
+    }
+
     // Load stored resumes + demo
     const storedResumes = sessionStorage.getItem('cvglow_resumes')
     const extra: Resume[] = storedResumes ? JSON.parse(storedResumes) : []
@@ -60,6 +94,45 @@ export default function DashboardPage() {
   const handleLogout = () => {
     sessionStorage.removeItem('cvglow_user')
     router.push('/')
+  }
+
+  const handleCancelSubscription = async () => {
+    if (!user?.subscription_id) {
+      alert('No active subscription found')
+      return
+    }
+
+    const confirmed = confirm(
+      'Are you sure you want to cancel your Premium subscription? You will lose access at the end of your billing period.'
+    )
+    if (!confirmed) return
+
+    try {
+      const res = await fetch('/api/stripe/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionId: user.subscription_id }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert('Error: ' + data.error)
+        return
+      }
+
+      // Update user subscription status in sessionStorage
+      const updatedUser = { ...user, subscription_status: 'premium_canceling' }
+      sessionStorage.setItem('cvglow_user', JSON.stringify(updatedUser))
+      setUser(updatedUser)
+
+      alert(
+        `Subscription canceled. You will have access until ${new Date(data.currentPeriodEnd).toLocaleDateString()}.`
+      )
+    } catch (err) {
+      console.error('Cancel error:', err)
+      alert('Failed to cancel subscription. Please try again.')
+    }
   }
 
   if (loading) return (
@@ -84,7 +157,15 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <span className="text-xs text-gray-400 truncate hidden sm:block max-w-[160px]">{user?.email}</span>
             {isPremium ? (
-              <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{background: "#f8f7ff", color: "#6d1ee8"}}>✨ Premium</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{background: "#f8f7ff", color: "#6d1ee8"}}>✨ Premium</span>
+                <button
+                  onClick={handleCancelSubscription}
+                  className="text-xs font-medium px-2.5 py-1 rounded-full border border-red-200 text-red-600 hover:bg-red-50 transition-colors shrink-0"
+                >
+                  Cancel
+                </button>
+              </div>
             ) : (
               <Link href="/pricing" className="text-xs font-semibold px-2.5 py-1 rounded-full border shrink-0 transition-colors" style={{borderColor: "#8239f5", color: "#8239f5"}}>Upgrade</Link>
             )}

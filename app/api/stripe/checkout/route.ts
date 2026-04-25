@@ -28,7 +28,11 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    return NextResponse.json({ sessionId: session.id, url: session.url })
+    return NextResponse.json({
+      sessionId: session.id,
+      url: session.url,
+      metadata: session.metadata, // Include metadata so client can track user
+    })
   } catch (error) {
     console.error('Stripe checkout error:', error)
     return NextResponse.json(
