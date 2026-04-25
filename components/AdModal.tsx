@@ -45,8 +45,8 @@ export default function AdModal({ isOpen, onClose, minShowDuration = 5 }: AdModa
           <ins
             className="adsbygoogle"
             style={{ display: 'block' }}
-            data-ad-client="ca-pub-xxxxxxxxxxxxxxxx" // 替换为实际的 AdSense ID
-            data-ad-slot="xxxxxxxx" // 替换为实际的 ad slot
+            data-ad-client="ca-pub-2117567568064203"
+            data-ad-slot="5901331033"
             data-ad-format="vertical"
             data-full-width-responsive="true"
           ></ins>
