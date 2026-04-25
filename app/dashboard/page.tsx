@@ -51,26 +51,32 @@ export default function DashboardPage() {
     const params = new URLSearchParams(window.location.search)
     const sessionId = params.get('session_id')
 
-    if (sessionId && !u.subscription_id) {
-      // Fetch session details to get subscription ID
-      fetch(`/api/stripe/session-details?sessionId=${sessionId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.subscriptionId) {
-            // Update user with subscription ID and status
-            const updatedUser = {
-              ...u,
-              subscription_id: data.subscriptionId,
-              subscription_status: 'premium',
-            }
-            sessionStorage.setItem('cvglow_user', JSON.stringify(updatedUser))
-            setUser(updatedUser)
+    if (sessionId && u.subscription_status !== 'premium') {
+      // User just completed payment, update their status to premium
+      // The subscription_id will be stored in Stripe's records
+      const upgradeEmail = sessionStorage.getItem('stripe_upgrade_email')
 
-            // Clean up URL
-            window.history.replaceState({}, '', '/dashboard')
-          }
-        })
-        .catch(err => console.error('Failed to get session details:', err))
+      if (upgradeEmail === u.email) {
+        // Confirm this user initiated the payment
+        const updatedUser = {
+          ...u,
+          subscription_id: sessionId, // Use session ID as reference
+          subscription_status: 'premium',
+        }
+        sessionStorage.setItem('cvglow_user', JSON.stringify(updatedUser))
+        setUser(updatedUser)
+
+        // Clean up temporary data
+        sessionStorage.removeItem('stripe_upgrade_email')
+
+        // Clean up URL
+        window.history.replaceState({}, '', '/dashboard')
+
+        // Show success message
+        alert('✨ 恭喜！你已升級到 Premium！')
+      } else {
+        setUser(u)
+      }
     } else {
       setUser(u)
     }

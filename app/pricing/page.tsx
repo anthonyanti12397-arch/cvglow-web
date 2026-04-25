@@ -35,8 +35,10 @@ export default function PricingPage() {
         return
       }
 
-      // Redirect to Stripe Checkout
+      // Redirect to Stripe Checkout with success URL that includes user info
       if (url) {
+        // Store the session email temporarily to update on return
+        sessionStorage.setItem('stripe_upgrade_email', user.email)
         window.location.href = url
       }
     } catch (err) {
