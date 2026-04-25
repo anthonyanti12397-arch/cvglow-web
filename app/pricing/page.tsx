@@ -5,16 +5,45 @@ import Link from 'next/link'
 
 export default function PricingPage() {
   const [upgrading, setUpgrading] = useState(false)
-  const [upgraded, setUpgraded] = useState(false)
 
   const handleUpgrade = async () => {
     setUpgrading(true)
-    await new Promise(r => setTimeout(r, 1000))
-    const user = JSON.parse(sessionStorage.getItem('cvglow_user') || '{}')
-    sessionStorage.setItem('cvglow_user', JSON.stringify({ ...user, subscription_status: 'premium' }))
-    setUpgrading(false)
-    setUpgraded(true)
-    setTimeout(() => window.location.href = '/dashboard', 1200)
+    try {
+      const user = JSON.parse(sessionStorage.getItem('cvglow_user') || '{}')
+
+      if (!user.email) {
+        alert('Please sign in first to upgrade')
+        window.location.href = '/auth/login'
+        return
+      }
+
+      // Call checkout API
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID || 'price_1234567890',
+          email: user.email,
+        }),
+      })
+
+      const { url, error } = await res.json()
+
+      if (error) {
+        alert('Error: ' + error)
+        setUpgrading(false)
+        return
+      }
+
+      // Redirect to Stripe Checkout
+      if (url) {
+        window.location.href = url
+      }
+    } catch (err) {
+      console.error('Upgrade error:', err)
+      alert('Payment error. Please try again.')
+      setUpgrading(false)
+    }
   }
 
   return (
@@ -95,20 +124,14 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                {upgraded ? (
-                  <div className="text-center py-3 font-semibold text-purple-700 bg-white rounded-xl">
-                    ✓ Upgraded! Redirecting...
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleUpgrade}
-                    disabled={upgrading}
-                    className="w-full bg-white font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors disabled:opacity-70"
-                    style={{color: "#6d1ee8"}}
-                  >
-                    {upgrading ? 'Processing...' : 'Upgrade to Premium'}
-                  </button>
-                )}
+                <button
+                  onClick={handleUpgrade}
+                  disabled={upgrading}
+                  className="w-full bg-white font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors disabled:opacity-70"
+                  style={{color: "#6d1ee8"}}
+                >
+                  {upgrading ? 'Redirecting to payment...' : 'Upgrade to Premium'}
+                </button>
                 <p className="text-xs text-purple-200 text-center mt-3">Cancel anytime · No hidden fees</p>
               </div>
             </div>
