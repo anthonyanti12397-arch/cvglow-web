@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ResumePreview from '@/components/ResumePreview'
+import AdModal from '@/components/AdModal'
 import { Resume } from '@/lib/types'
 
 const DEMO_RESUME: Resume = {
@@ -32,6 +33,9 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
   const router = useRouter()
   const [resume, setResume] = useState<Resume | null>(null)
   const [downloading, setDownloading] = useState(false)
+  const [showAdModal, setShowAdModal] = useState(false)
+  const [pendingDownload, setPendingDownload] = useState(false)
+  const [isFreePlan, setIsFreePlan] = useState(false)
 
   useEffect(() => {
     if (id === 'demo') {
@@ -40,6 +44,15 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
     }
     const stored = sessionStorage.getItem('cvglow_user')
     if (!stored) { router.push('/auth/login'); return }
+
+    // 检查用户是否为free计划
+    try {
+      const user = JSON.parse(stored)
+      setIsFreePlan(user.subscription_status === 'free' || !user.subscription_status)
+    } catch (e) {
+      setIsFreePlan(true)
+    }
+
     if (id === 'resume-001') { setResume(DEMO_RESUME); return }
     const resumes = JSON.parse(sessionStorage.getItem('cvglow_resumes') || '[]')
     const found = resumes.find((r: Resume) => r.id === id)
@@ -48,6 +61,25 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
   }, [id, router])
 
   const handleDownload = async () => {
+    // 获取当前下载计数
+    const currentCount = parseInt(sessionStorage.getItem('pdf_export_count') || '0')
+    const newCount = currentCount + 1
+
+    // 更新计数
+    sessionStorage.setItem('pdf_export_count', newCount.toString())
+
+    // 检查是否需要显示广告（free用户，每2份PDF）
+    if (isFreePlan && newCount % 2 === 0) {
+      setPendingDownload(true)
+      setShowAdModal(true)
+      return
+    }
+
+    // 直接执行下载
+    await executePdfDownload()
+  }
+
+  const executePdfDownload = async () => {
     setDownloading(true)
     try {
       const { default: html2canvas } = await import('html2canvas')
@@ -69,6 +101,14 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
     }
   }
 
+  const handleAdModalClose = async () => {
+    setShowAdModal(false)
+    if (pendingDownload) {
+      setPendingDownload(false)
+      await executePdfDownload()
+    }
+  }
+
   if (!resume) return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-8 h-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin"></div>
@@ -76,7 +116,9 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
   )
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <>
+      <AdModal isOpen={showAdModal} onClose={handleAdModalClose} minShowDuration={5} />
+      <div className="min-h-screen bg-gray-100">
       {/* Toolbar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50 print:hidden">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -112,5 +154,6 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
     </div>
+    </>
   )
 }
