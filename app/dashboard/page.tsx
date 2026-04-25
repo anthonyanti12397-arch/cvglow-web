@@ -26,11 +26,12 @@ const DEMO_RESUMES: Resume[] = [
 ]
 
 interface User {
+  id: string
   email: string
   full_name: string
   subscription_status: string
-  subscription_id?: string
-  subscription_cancel_at?: number
+  // SECURITY: Do NOT store sensitive data like passwords, tokens, or credit card info
+  // Use secure HTTP-only cookies for auth tokens (handled by NextAuth)
 }
 
 export default function DashboardPage() {
