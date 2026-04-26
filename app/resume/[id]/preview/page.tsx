@@ -130,6 +130,12 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
             <Link href={`/resume/${id}`} className="text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-300 transition-colors">
               Edit
             </Link>
+            <Link
+              href={`/resume/${id}/customize`}
+              className="text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg border border-orange-200 text-orange-600 hover:bg-orange-50 transition-colors"
+            >
+              ✨ Customize
+            </Link>
             <button
               onClick={handleDownload}
               disabled={downloading}
