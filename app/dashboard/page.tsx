@@ -30,6 +30,7 @@ interface User {
   email: string
   full_name: string
   subscription_status: string
+  subscription_id?: string
   // SECURITY: Do NOT store sensitive data like passwords, tokens, or credit card info
   // Use secure HTTP-only cookies for auth tokens (handled by NextAuth)
 }

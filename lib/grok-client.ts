@@ -1,6 +1,21 @@
 const GROK_API_KEY = process.env.GROK_API_KEY || '';
 const GROK_BASE_URL = 'https://api.x.ai/v1';
 
+export interface ATSResult {
+  score: number // 0-100
+  verdict: 'Strong' | 'Good' | 'Needs Work' | 'Weak'
+  matched_keywords: string[]
+  missing_keywords: string[]
+  strengths: string[]
+  improvements: string[]
+  summary: string
+}
+
+export interface CoverLetterResult {
+  cover_letter: string
+  word_count: number
+}
+
 export interface JobData {
   job_title: string;
   company_name?: string;
@@ -195,6 +210,136 @@ ${JSON.stringify(resumeContent, null, 2)}
       throw new Error(
         `Failed to customize resume: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
+    }
+  }
+
+  /**
+   * Score a resume against a job description (ATS simulation)
+   */
+  static async scoreATS(
+    resumeContent: any,
+    jobTitle: string,
+    jobDescription: string
+  ): Promise<ATSResult> {
+    try {
+      const response = await fetch(`${GROK_BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${GROK_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'grok-4.20-reasoning',
+          messages: [
+            {
+              role: 'user',
+              content: `You are an expert ATS (Applicant Tracking System) analyst. Evaluate how well this resume matches the job posting.
+
+RESUME:
+${JSON.stringify(resumeContent, null, 2)}
+
+JOB TITLE: ${jobTitle}
+JOB DESCRIPTION:
+${jobDescription}
+
+Analyse the resume against the job description. Be rigorous and honest.
+
+Return ONLY valid JSON:
+{
+  "score": <integer 0-100>,
+  "verdict": <"Strong"|"Good"|"Needs Work"|"Weak">,
+  "matched_keywords": [<keywords from the job description that appear in the resume>],
+  "missing_keywords": [<important keywords from the job description that are absent>],
+  "strengths": [<2-3 specific things the resume does well for this role>],
+  "improvements": [<2-3 specific, actionable improvements>],
+  "summary": "<one sentence verdict>"
+}`,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Grok API error: ${response.statusText}`);
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content || '{}';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text);
+
+      return {
+        score: Math.min(100, Math.max(0, parsed.score ?? 0)),
+        verdict: parsed.verdict ?? 'Needs Work',
+        matched_keywords: Array.isArray(parsed.matched_keywords) ? parsed.matched_keywords : [],
+        missing_keywords: Array.isArray(parsed.missing_keywords) ? parsed.missing_keywords : [],
+        strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+        improvements: Array.isArray(parsed.improvements) ? parsed.improvements : [],
+        summary: parsed.summary ?? '',
+      };
+    } catch (error) {
+      console.error('ATS scoring failed:', error);
+      throw new Error(`Failed to score resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate a personalised cover letter
+   */
+  static async generateCoverLetter(
+    resumeContent: any,
+    jobTitle: string,
+    companyName: string,
+    jobDescription: string
+  ): Promise<CoverLetterResult> {
+    try {
+      const response = await fetch(`${GROK_BASE_URL}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${GROK_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'grok-4.20-reasoning',
+          messages: [
+            {
+              role: 'user',
+              content: `You are a professional career coach writing a compelling cover letter. Write in first person as the candidate. Sound human, not AI-generated.
+
+CANDIDATE RESUME:
+${JSON.stringify(resumeContent, null, 2)}
+
+TARGET ROLE: ${jobTitle} at ${companyName || 'the company'}
+JOB DESCRIPTION:
+${jobDescription}
+
+Write a 3-paragraph cover letter (250-320 words) that:
+1. Opens with a specific, compelling hook — not "I am writing to apply for..."
+2. Connects 2-3 of the candidate's most relevant experiences directly to the job requirements
+3. Closes with confidence and a clear call to action
+
+Return ONLY valid JSON:
+{
+  "cover_letter": "<full cover letter text with \\n for line breaks>",
+  "word_count": <integer>
+}`,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Grok API error: ${response.statusText}`);
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content || '{}';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text);
+
+      return {
+        cover_letter: parsed.cover_letter ?? '',
+        word_count: parsed.word_count ?? 0,
+      };
+    } catch (error) {
+      console.error('Cover letter generation failed:', error);
+      throw new Error(`Failed to generate cover letter: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }

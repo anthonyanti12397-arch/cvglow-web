@@ -23,8 +23,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       subscriptionId: canceledSubscription.id,
-      canceledAt: new Date(canceledSubscription.canceled_at! * 1000),
-      currentPeriodEnd: new Date(canceledSubscription.current_period_end * 1000),
+      canceledAt: canceledSubscription.canceled_at
+        ? new Date(canceledSubscription.canceled_at * 1000)
+        : null,
+      currentPeriodEnd: (canceledSubscription as any).current_period_end
+        ? new Date((canceledSubscription as any).current_period_end * 1000)
+        : null,
     })
   } catch (error) {
     console.error('Stripe cancel subscription error:', error)
