@@ -38,13 +38,20 @@ Full strategic review of CVGlow as a product. Identified core positioning proble
 - Real AdSense IDs configured: ca-pub-2117567568064203, slot 5901331033
 - Vercel env var: NEXT_PUBLIC_ADSENSE_CLIENT_ID
 
-#### 🔄 This Session — In Progress
-- [ ] Homepage redesign (honest copy, new positioning)
-- [ ] 5 new resume templates
-- [ ] ATS Score system
-- [ ] AI Cover Letter generator
-- [ ] Brand update (no emoji icons)
-- [ ] Resume share links
+#### ✅ Session 1 (Strategic Overhaul)
+- [x] Homepage redesign — new brand, honest copy, Navy + Coral palette
+- [x] 5 resume templates — Classic, Tech, Finance, Creative, Minimal
+- [x] ATS Score system — Grok scores resume vs job description
+- [x] Cover Letter API — Grok generates personalised letters
+- [x] Template picker in preview toolbar
+- [x] TypeScript fixes (NextAuth, Stripe)
+
+#### ✅ Session 2 (Retention Features)
+- [x] Cover Letter UI — full page, history, copy to clipboard
+- [x] Application Tracker — /tracker, kanban board, 5 stages
+- [x] Resume Share Link — /r/[slug] public page with viral CTA
+- [x] Share button in preview toolbar
+- [x] Application Tracker link from dashboard
 
 ### Tech Decisions
 - **No database yet**: Using sessionStorage + localStorage for MVP speed
