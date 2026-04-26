@@ -174,6 +174,14 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Quick links */}
+        <div className="flex gap-2 mb-6 flex-wrap">
+          <Link href="/tracker" className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors hover:bg-gray-50" style={{borderColor: '#e2e8f0', color: '#475569'}}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+            Application Tracker
+          </Link>
+        </div>
+
         {/* Title row */}
         <div className="flex items-center justify-between mb-6">
           <div>

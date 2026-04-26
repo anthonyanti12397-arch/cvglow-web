@@ -50,6 +50,11 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
   const [activeTemplate, setActiveTemplate] = useState<TemplateId>('classic')
   const [showTemplates, setShowTemplates] = useState(false)
 
+  // Share link state
+  const [shareLink, setShareLink] = useState('')
+  const [shareCopied, setShareCopied] = useState(false)
+  const [showSharePanel, setShowSharePanel] = useState(false)
+
   // ATS Score state
   const [showATSPanel, setShowATSPanel] = useState(false)
   const [atsJobTitle, setAtsJobTitle] = useState('')
@@ -119,6 +124,15 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
   const handleAdModalClose = async () => {
     setShowAdModal(false)
     if (pendingDownload) { setPendingDownload(false); await executePdfDownload() }
+  }
+
+  const handleCreateShareLink = () => {
+    const slug = `${id}-${Math.random().toString(36).slice(2, 7)}`
+    localStorage.setItem(`cvglow_share_${slug}`, JSON.stringify({ resumeId: id, templateId: activeTemplate }))
+    const url = `${window.location.origin}/r/${slug}`
+    setShareLink(url)
+    navigator.clipboard.writeText(url).then(() => setShareCopied(true))
+    setTimeout(() => setShareCopied(false), 3000)
   }
 
   const handleATSScore = async () => {
@@ -222,6 +236,23 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
               >
                 ✨ Customize
               </Link>
+              <Link
+                href={`/resume/${id}/cover-letter`}
+                className="text-xs sm:text-sm font-medium px-3 py-2 rounded-lg border border-green-200 text-green-700 hover:bg-green-50 transition-colors hidden sm:block"
+              >
+                Cover Letter
+              </Link>
+
+              {/* Share */}
+              <button
+                onClick={() => setShowSharePanel(v => !v)}
+                className="text-xs sm:text-sm font-medium px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors flex items-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                Share
+              </button>
 
               <Link
                 href={`/resume/${id}`}
@@ -245,6 +276,43 @@ export default function ResumePreviewPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
         </div>
+
+        {/* Share Panel */}
+        {showSharePanel && (
+          <div className="bg-white border-b border-gray-200 print:hidden">
+            <div className="max-w-4xl mx-auto px-4 py-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900">Share Your Resume</h3>
+                <button onClick={() => setShowSharePanel(false)} className="text-gray-400 hover:text-gray-600 text-lg leading-none">×</button>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">Create a public link — anyone with the URL can view your resume. No login required.</p>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={handleCreateShareLink}
+                  className="px-5 py-2 text-white text-sm font-semibold rounded-lg"
+                  style={{background: "#0A1628"}}
+                >
+                  {shareLink ? 'Regenerate Link' : 'Create Share Link'}
+                </button>
+                {shareLink && (
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <input
+                      readOnly
+                      value={shareLink}
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-gray-50 min-w-0"
+                    />
+                    <span className="text-xs font-medium text-green-600 whitespace-nowrap">
+                      {shareCopied ? '✓ Copied!' : 'Click link to copy'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {shareLink && (
+                <p className="text-xs text-gray-400 mt-3">Link stored in your browser. For permanent links, upgrade to Premium (coming soon).</p>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ATS Score Panel */}
         {showATSPanel && (
