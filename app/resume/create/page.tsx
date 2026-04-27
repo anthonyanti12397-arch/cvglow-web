@@ -25,6 +25,8 @@ export default function CreateResumePage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [mobileTab, setMobileTab] = useState<'edit' | 'preview'>('edit')
+  const [importing, setImporting] = useState(false)
+  const [importError, setImportError] = useState('')
 
   useEffect(() => {
     const stored = sessionStorage.getItem('cvglow_user')
@@ -78,11 +80,78 @@ export default function CreateResumePage() {
     setTimeout(() => router.push('/dashboard'), 800)
   }
 
+  const handleLinkedInImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setImporting(true)
+    setImportError('')
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/resumes/import-linkedin', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Import failed')
+      setContent({
+        fullName: data.fullName || '',
+        jobTitle: data.jobTitle || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        summary: data.summary || '',
+        experiences: data.experiences?.length ? data.experiences : emptyContent.experiences,
+        educations: data.educations?.length ? data.educations : emptyContent.educations,
+        skills: data.skills || [],
+      })
+      if (data.fullName) setTitle(`${data.fullName} — Resume`)
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Import failed')
+    } finally {
+      setImporting(false)
+      e.target.value = ''
+    }
+  }
+
   const inputCls = "w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-400 transition-all"
   const labelCls = "block text-xs font-medium text-gray-500 mb-1"
 
   const formContent = (
     <div className="space-y-5">
+      {/* LinkedIn Import Banner */}
+      <div className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: '#0077B5' }}>
+            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-gray-900 text-sm mb-0.5">Import from LinkedIn</div>
+            <div className="text-xs text-gray-500 mb-3">
+              Export your LinkedIn profile as PDF: LinkedIn → Me → View Profile → More → Save to PDF
+            </div>
+            {importError && <div className="text-xs text-red-600 mb-2">{importError}</div>}
+            <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${importing ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90'}`} style={{ background: '#0077B5', color: 'white' }}>
+              {importing ? (
+                <>
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Importing...
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                  </svg>
+                  Upload LinkedIn PDF
+                </>
+              )}
+              <input type="file" accept=".pdf,image/*" className="hidden" onChange={handleLinkedInImport} disabled={importing} />
+            </label>
+          </div>
+        </div>
+      </div>
+
       {/* Basic Info */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5">
         <h2 className="font-semibold text-gray-900 mb-4">Basic Information</h2>

@@ -282,6 +282,134 @@ Return ONLY valid JSON:
   }
 
   /**
+   * Parse a LinkedIn PDF export into structured resume data
+   */
+  static async parseLinkedInPDF(
+    base64: string,
+    mimeType: string
+  ): Promise<{
+    fullName: string
+    jobTitle: string
+    email: string
+    phone: string
+    summary: string
+    experiences: Array<{ company: string; position: string; startDate: string; endDate: string; description: string }>
+    educations: Array<{ school: string; degree: string; field: string; graduateYear: string }>
+    skills: string[]
+  }> {
+    const response = await fetch(`${GROK_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROK_API_KEY}` },
+      body: JSON.stringify({
+        model: 'grok-2-vision-1212',
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: { url: `data:${mimeType};base64,${base64}`, detail: 'high' },
+            },
+            {
+              type: 'text',
+              text: `This is a LinkedIn profile PDF export. Extract ALL information and return ONLY this JSON (no markdown, no explanation):
+{
+  "fullName": "full name",
+  "jobTitle": "current job title or headline",
+  "email": "email if visible, else empty string",
+  "phone": "phone if visible, else empty string",
+  "summary": "About/Summary section text",
+  "experiences": [
+    { "company": "company name", "position": "job title", "startDate": "YYYY-MM", "endDate": "YYYY-MM or Present", "description": "responsibilities and achievements" }
+  ],
+  "educations": [
+    { "school": "school name", "degree": "Bachelor/Master/PhD/etc", "field": "field of study", "graduateYear": "YYYY" }
+  ],
+  "skills": ["skill1", "skill2", "skill3"]
+}
+Rules: experiences and educations must be arrays. skills must be an array of strings. Return valid JSON only.`,
+            },
+          ],
+        }],
+      }),
+    })
+
+    if (!response.ok) throw new Error(`Grok API error: ${response.statusText}`)
+    const data = await response.json()
+    const text = data.choices?.[0]?.message?.content || '{}'
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text)
+
+    return {
+      fullName: parsed.fullName || '',
+      jobTitle: parsed.jobTitle || '',
+      email: parsed.email || '',
+      phone: parsed.phone || '',
+      summary: parsed.summary || '',
+      experiences: Array.isArray(parsed.experiences) ? parsed.experiences : [],
+      educations: Array.isArray(parsed.educations) ? parsed.educations : [],
+      skills: Array.isArray(parsed.skills) ? parsed.skills : [],
+    }
+  }
+
+  /**
+   * Run an interview simulation turn
+   */
+  static async interviewTurn(
+    resumeContent: any,
+    jobTitle: string,
+    history: Array<{ role: 'interviewer' | 'candidate'; content: string }>,
+    candidateAnswer: string
+  ): Promise<{ question: string; feedback: string; score: number }> {
+    const historyText = history.map(h => `${h.role === 'interviewer' ? 'Interviewer' : 'You'}: ${h.content}`).join('\n')
+
+    const response = await fetch(`${GROK_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROK_API_KEY}` },
+      body: JSON.stringify({
+        model: 'grok-4.20-reasoning',
+        messages: [{
+          role: 'user',
+          content: `You are an experienced interviewer at a top company conducting a job interview.
+
+CANDIDATE RESUME:
+${JSON.stringify(resumeContent, null, 2)}
+
+TARGET ROLE: ${jobTitle}
+
+INTERVIEW SO FAR:
+${historyText || '(Interview is starting)'}
+${candidateAnswer ? `Candidate's latest answer: ${candidateAnswer}` : ''}
+
+Your task:
+1. If this is the first question, introduce yourself briefly and ask a strong opening question.
+2. Otherwise, give brief feedback on the candidate's last answer (be honest, constructive, specific), then ask the next interview question.
+3. Ask questions covering: background, technical skills, behavioral (STAR method), problem-solving.
+4. After 6+ exchanges, you may signal the interview is wrapping up.
+
+Return ONLY valid JSON:
+{
+  "question": "your next interview question or closing statement",
+  "feedback": "brief honest feedback on their last answer (empty string if first question)",
+  "score": <integer 1-10 rating of their last answer quality, 5 if first question>
+}`,
+        }],
+      }),
+    })
+
+    if (!response.ok) throw new Error(`Grok API error: ${response.statusText}`)
+    const data = await response.json()
+    const text = data.choices?.[0]?.message?.content || '{}'
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text)
+
+    return {
+      question: parsed.question || '',
+      feedback: parsed.feedback || '',
+      score: Math.min(10, Math.max(1, parsed.score ?? 5)),
+    }
+  }
+
+  /**
    * Generate a personalised cover letter
    */
   static async generateCoverLetter(
