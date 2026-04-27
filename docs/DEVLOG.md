@@ -2,6 +2,47 @@
 
 ---
 
+## 2026-04-27 — Growth Features Session
+
+### What Was Built
+
+#### ✅ LinkedIn PDF Import
+- `app/api/resumes/import-linkedin/route.ts` — POST endpoint, accepts PDF or image
+- `GrokClient.parseLinkedInPDF()` — Grok Vision parses LinkedIn export into structured resume fields
+- Create Resume page (`app/resume/create/page.tsx`) — LinkedIn import banner at top of form
+- Flow: LinkedIn → Me → View Profile → More → Save to PDF → upload → all fields auto-filled
+
+#### ✅ Interview Simulator
+- `app/interview/page.tsx` — full mock interview UI
+- `app/api/interview/route.ts` — POST endpoint
+- `GrokClient.interviewTurn()` — Grok as interviewer: asks questions, scores answers 1-10, gives written feedback
+- 8-turn session, progress bar, avg score display, "Practice Again" flow
+- Dashboard quick link added
+- No data stored (session only) — Supabase will persist sessions later
+
+#### ✅ Supabase Schema (ready to activate)
+- `lib/supabase/client.ts` — lazy client with `SUPABASE_ENABLED` flag, falls back to localStorage when not configured
+- `lib/supabase/schema.sql` — full production schema:
+  - Tables: users, resumes, resume_shares, applications, cover_letters, interview_sessions
+  - RLS policies: each user can only see their own data, resume_shares are public reads
+  - Triggers: updated_at auto-maintained
+- **To activate**: create Supabase project → run schema SQL → add `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` to Vercel env vars → flip `SUPABASE_ENABLED = true`
+
+#### ✅ WhatsApp Bot (ready to activate)
+- `app/api/whatsapp/webhook/route.ts` — Twilio TwiML webhook
+- Commands: `help`, `score` (ATS tips), `interview` (STAR method), `jobs` (HK job boards), `app`
+- **To activate**: Twilio account → WhatsApp Sandbox → webhook URL → add `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` to Vercel
+
+### Tech Decisions
+- Supabase schema written but NOT yet activated — app still runs 100% on localStorage/sessionStorage until credentials added
+- Interview simulator is stateless by design for now (no DB dependency)
+- WhatsApp bot is pure webhook, no persistent state needed
+
+### Commit
+- `21acd21` — deployed to Vercel
+
+---
+
 ## 2026-04-26 — Strategic Overhaul Session
 
 ### Context
