@@ -65,9 +65,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{background: "linear-gradient(135deg, #f8f7ff 0%, #fff 100%)"}}>
+    <div className="min-h-screen flex" style={{background: "linear-gradient(135deg, #f0f4ff 0%, #fff 100%)"}}>
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{background: "linear-gradient(135deg, #8239f5, #6d1ee8)"}}>
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
         <div className="max-w-md text-white">
           <div className="flex items-center gap-3 mb-10">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
@@ -76,7 +76,7 @@ export default function LoginPage() {
             <span className="text-2xl font-bold">CVGlow</span>
           </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">Welcome back!</h2>
-          <p className="text-purple-100 text-lg leading-relaxed">
+          <p className="text-slate-200 text-lg leading-relaxed">
             Continue building your professional resume and land your dream job.
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #8f5ff7, #6d1ee8)"}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
               <span className="text-white font-bold text-sm">CV</span>
             </div>
             <span className="font-bold text-gray-900 text-lg">CVGlow</span>
@@ -150,7 +150,7 @@ export default function LoginPage() {
               onClick={handleDemoLogin}
               disabled={isLoading}
               className="w-full text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60"
-              style={{background: isLoading ? "#a785ff" : "#8239f5"}}
+              style={{background: isLoading ? "#4a6080" : "#0A1628"}}
             >
               {isLoading ? 'Signing in...' : 'Demo Login'}
             </button>
@@ -158,7 +158,7 @@ export default function LoginPage() {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="font-medium" style={{color: "#8239f5"}}>
+            <Link href="/auth/signup" className="font-medium" style={{color: "#0A1628"}}>
               Create one free
             </Link>
           </p>

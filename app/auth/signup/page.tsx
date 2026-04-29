@@ -40,9 +40,9 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{background: "linear-gradient(135deg, #f8f7ff 0%, #fff 100%)"}}>
+    <div className="min-h-screen flex" style={{background: "linear-gradient(135deg, #f0f4ff 0%, #fff 100%)"}}>
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{background: "linear-gradient(135deg, #8239f5, #6d1ee8)"}}>
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
         <div className="max-w-md text-white">
           <div className="flex items-center gap-3 mb-10">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
@@ -51,7 +51,7 @@ export default function SignupPage() {
             <span className="text-2xl font-bold">CVGlow</span>
           </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">Build your perfect resume today</h2>
-          <p className="text-purple-100 text-lg leading-relaxed mb-8">
+          <p className="text-slate-200 text-lg leading-relaxed mb-8">
             Join thousands of professionals who&apos;ve landed their dream jobs using CVGlow.
           </p>
           <div className="space-y-4">
@@ -62,7 +62,7 @@ export default function SignupPage() {
             ].map(item => (
               <div key={item.text} className="flex items-center gap-3">
                 <span className="text-xl">{item.icon}</span>
-                <span className="text-purple-100">{item.text}</span>
+                <span className="text-slate-200">{item.text}</span>
               </div>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function SignupPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #8f5ff7, #6d1ee8)"}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
               <span className="text-white font-bold text-sm">CV</span>
             </div>
             <span className="font-bold text-gray-900 text-lg">CVGlow</span>
@@ -91,7 +91,7 @@ export default function SignupPage() {
                 onChange={e => setForm({ ...form, name: e.target.value })}
                 placeholder="Alex Chen"
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-                style={{"--tw-ring-color": "#8239f5"} as React.CSSProperties}
+                style={{"--tw-ring-color": "#0A1628"} as React.CSSProperties}
               />
             </div>
             <div>
@@ -125,7 +125,7 @@ export default function SignupPage() {
               type="submit"
               disabled={loading}
               className="w-full text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 mt-2"
-              style={{background: loading ? "#a785ff" : "#8239f5"}}
+              style={{background: loading ? "#4a6080" : "#0A1628"}}
             >
               {loading ? 'Creating account...' : 'Create Account — Free'}
             </button>
@@ -133,7 +133,7 @@ export default function SignupPage() {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Already have an account?{' '}
-            <Link href="/auth/login" className="font-medium" style={{color: "#8239f5"}}>
+            <Link href="/auth/login" className="font-medium" style={{color: "#0A1628"}}>
               Sign in
             </Link>
           </p>

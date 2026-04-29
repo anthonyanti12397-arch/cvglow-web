@@ -54,7 +54,7 @@ export default function PricingPage() {
       <nav className="border-b border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #8f5ff7, #6d1ee8)"}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
               <span className="text-white font-bold text-sm">CV</span>
             </div>
             <span className="font-bold text-gray-900 text-lg">CVGlow</span>
@@ -99,7 +99,7 @@ export default function PricingPage() {
             </div>
 
             {/* Premium */}
-            <div className="rounded-3xl p-8 text-left text-white relative overflow-hidden" style={{background: "linear-gradient(135deg, #8239f5, #5a15c8)"}}>
+            <div className="rounded-3xl p-8 text-left text-white relative overflow-hidden" style={{background: "linear-gradient(135deg, #0A1628, #1a3a6b)"}}>
               <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full" style={{background: "rgba(255,255,255,0.1)"}}></div>
               <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full" style={{background: "rgba(255,255,255,0.05)"}}></div>
               <div className="relative">
@@ -108,8 +108,8 @@ export default function PricingPage() {
                     <div className="font-bold text-xl">Premium</div>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background: "rgba(255,255,255,0.2)"}}>Most Popular</span>
                   </div>
-                  <div className="text-4xl font-bold mt-2">$3.99<span className="text-base font-normal text-purple-200">/month</span></div>
-                  <div className="text-purple-200 text-sm mt-1">That&apos;s less than a cup of coffee ☕</div>
+                  <div className="text-4xl font-bold mt-2">$3.99<span className="text-base font-normal text-slate-300">/month</span></div>
+                  <div className="text-slate-300 text-sm mt-1">That&apos;s less than a cup of coffee ☕</div>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {[
@@ -121,7 +121,7 @@ export default function PricingPage() {
                     'Cloud storage',
                     'Early access to new features',
                   ].map(f => (
-                    <li key={f} className="flex items-center gap-2 text-sm text-purple-100">
+                    <li key={f} className="flex items-center gap-2 text-sm text-slate-200">
                       <span className="text-white font-bold">✓</span> {f}
                     </li>
                   ))}
@@ -129,12 +129,12 @@ export default function PricingPage() {
                 <button
                   onClick={handleUpgrade}
                   disabled={upgrading}
-                  className="w-full bg-white font-bold py-3 rounded-xl hover:bg-purple-50 transition-colors disabled:opacity-70"
-                  style={{color: "#6d1ee8"}}
+                  className="w-full bg-white font-bold py-3 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-70"
+                  style={{color: "#0A1628"}}
                 >
                   {upgrading ? 'Redirecting to payment...' : 'Upgrade to Premium'}
                 </button>
-                <p className="text-xs text-purple-200 text-center mt-3">Cancel anytime · No hidden fees</p>
+                <p className="text-xs text-slate-300 text-center mt-3">Cancel anytime · No hidden fees</p>
               </div>
             </div>
           </div>

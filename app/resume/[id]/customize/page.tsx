@@ -180,7 +180,7 @@ export default function CustomizeResumePage({
   if (!resume) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin"></div>
+        <div className="w-8 h-8 rounded-full border-2 border-[#0A1628] border-t-transparent animate-spin"></div>
       </div>
     );
   }
@@ -192,7 +192,7 @@ export default function CustomizeResumePage({
         <div className="mb-8">
           <Link
             href={`/resume/${id}/preview`}
-            className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+            className="text-[#0A1628] hover:text-[#0A1628] text-sm font-medium"
           >
             ← 返回简历预览
           </Link>
@@ -216,18 +216,18 @@ export default function CustomizeResumePage({
             <div
               className={`p-6 rounded-lg border-2 ${
                 step === 'upload' || step === 'extract' || step === 'customize' || step === 'result'
-                  ? 'border-purple-600 bg-purple-50'
+                  ? 'border-[#0A1628] bg-slate-50'
                   : 'border-gray-200'
               }`}
             >
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-purple-600 text-white text-center text-sm">
+                <span className="w-6 h-6 rounded-full bg-[#0A1628] text-white text-center text-sm">
                   1
                 </span>
                 上传职位截图
               </h2>
 
-              <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center cursor-pointer hover:bg-purple-50 transition">
+              <div className="border-2 border-dashed border-blue-200 rounded-lg p-6 text-center cursor-pointer hover:bg-slate-50 transition">
                 <input
                   type="file"
                   accept="image/*"
@@ -297,7 +297,7 @@ export default function CustomizeResumePage({
                 <button
                   onClick={generateCustomization}
                   disabled={loading}
-                  className="w-full mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-60 font-medium transition"
+                  className="w-full mt-4 px-4 py-2 bg-[#0A1628] text-white rounded-lg hover:bg-[#1a3a6b] disabled:opacity-60 font-medium transition"
                 >
                   {loading ? '生成中... 🤖' : '生成定制简历 ✨'}
                 </button>
@@ -376,7 +376,7 @@ export default function CustomizeResumePage({
                     <h3 className="font-bold mb-4">💼 重新组织的工作经验</h3>
                     <div className="space-y-4">
                       {customization.customized_experiences.map((exp, i) => (
-                        <div key={i} className="border-l-4 border-purple-600 pl-4">
+                        <div key={i} className="border-l-4 border-[#0A1628] pl-4">
                           <div className="font-bold text-gray-900">
                             {exp.position}
                           </div>

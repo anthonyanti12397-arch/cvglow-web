@@ -110,7 +110,7 @@ export default function CreateResumePage() {
     }
   }
 
-  const inputCls = "w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-400 transition-all"
+  const inputCls = "w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-900 transition-all"
   const labelCls = "block text-xs font-medium text-gray-500 mb-1"
 
   const formContent = (
@@ -185,7 +185,7 @@ export default function CreateResumePage() {
       <div className="bg-white rounded-2xl border border-gray-100 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Work Experience</h2>
-          <button onClick={() => update('experiences', [...content.experiences, { company: '', position: '', startDate: '', endDate: '', description: '' }])} className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style={{color: "#8239f5", borderColor: "#8239f5"}}>+ Add</button>
+          <button onClick={() => update('experiences', [...content.experiences, { company: '', position: '', startDate: '', endDate: '', description: '' }])} className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style={{color: "#0A1628", borderColor: "#0A1628"}}>+ Add</button>
         </div>
         <div className="space-y-5">
           {content.experiences.map((exp, i) => (
@@ -229,7 +229,7 @@ export default function CreateResumePage() {
       <div className="bg-white rounded-2xl border border-gray-100 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Education</h2>
-          <button onClick={() => update('educations', [...content.educations, { school: '', degree: 'Bachelor', field: '', graduateYear: '' }])} className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style={{color: "#8239f5", borderColor: "#8239f5"}}>+ Add</button>
+          <button onClick={() => update('educations', [...content.educations, { school: '', degree: 'Bachelor', field: '', graduateYear: '' }])} className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors" style={{color: "#0A1628", borderColor: "#0A1628"}}>+ Add</button>
         </div>
         <div className="space-y-4">
           {content.educations.map((edu, i) => (
@@ -268,14 +268,14 @@ export default function CreateResumePage() {
         <h2 className="font-semibold text-gray-900 mb-4">Skills</h2>
         <div className="flex gap-2 mb-3">
           <input className={`${inputCls} flex-1`} placeholder="e.g. React, Python, Figma" value={skillInput} onChange={e => setSkillInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }} />
-          <button onClick={addSkill} className="px-3 py-2 rounded-lg text-sm font-medium text-white" style={{background: "#8239f5"}}>Add</button>
+          <button onClick={addSkill} className="px-3 py-2 rounded-lg text-sm font-medium text-white" style={{background: "#0A1628"}}>Add</button>
         </div>
         {content.skills.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {content.skills.map(skill => (
-              <span key={skill} className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full" style={{background: "#f8f7ff", color: "#6d1ee8"}}>
+              <span key={skill} className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full" style={{background: "#f0f4ff", color: "#0A1628"}}>
                 {skill}
-                <button onClick={() => removeSkill(skill)} className="text-purple-400 hover:text-purple-700 text-xs">✕</button>
+                <button onClick={() => removeSkill(skill)} className="text-slate-400 hover:text-[#0A1628] text-xs">✕</button>
               </span>
             ))}
           </div>
@@ -303,7 +303,7 @@ export default function CreateResumePage() {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             {saved && <span className="text-green-600 text-xs sm:text-sm font-medium">✓ Saved</span>}
-            <button onClick={handleSave} disabled={saving} className="text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg transition-all disabled:opacity-60 whitespace-nowrap" style={{background: "#8239f5"}}>
+            <button onClick={handleSave} disabled={saving} className="text-white text-xs sm:text-sm font-medium px-3 sm:px-4 py-2 rounded-lg transition-all disabled:opacity-60 whitespace-nowrap" style={{background: "#0A1628"}}>
               {saving ? 'Saving...' : 'Save'}
             </button>
           </div>

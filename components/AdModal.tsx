@@ -40,7 +40,7 @@ export default function AdModal({ isOpen, onClose, minShowDuration = 5 }: AdModa
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
       <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
         {/* 广告区域 */}
-        <div className="bg-gradient-to-b from-purple-50 to-blue-50 p-6 min-h-[280px] flex items-center justify-center">
+        <div className="bg-gradient-to-b from-slate-50 to-blue-50 p-6 min-h-[280px] flex items-center justify-center">
           {/* Google AdSense 将在这里显示 */}
           <ins
             className="adsbygoogle"
@@ -65,7 +65,7 @@ export default function AdModal({ isOpen, onClose, minShowDuration = 5 }: AdModa
           <p className="text-xs text-gray-500 mb-4">
             Free版本由广告支持。
             {!canClose && (
-              <span className="font-semibold text-purple-600 ml-1">
+              <span className="font-semibold text-[#0A1628] ml-1">
                 {remainingTime}秒后可关闭
               </span>
             )}
@@ -77,7 +77,7 @@ export default function AdModal({ isOpen, onClose, minShowDuration = 5 }: AdModa
               disabled={!canClose}
               className={`flex-1 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                 canClose
-                  ? 'bg-purple-600 text-white hover:bg-purple-700'
+                  ? 'bg-[#0A1628] text-white hover:bg-[#1a3a6b]'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
@@ -85,7 +85,7 @@ export default function AdModal({ isOpen, onClose, minShowDuration = 5 }: AdModa
             </button>
             <button
               onClick={() => window.open('/pricing', '_blank')}
-              className="flex-1 py-2.5 px-4 rounded-lg font-medium text-sm border border-purple-600 text-purple-600 hover:bg-purple-50 transition-all"
+              className="flex-1 py-2.5 px-4 rounded-lg font-medium text-sm border border-[#0A1628] text-[#0A1628] hover:bg-slate-50 transition-all"
             >
               升级 Premium
             </button>

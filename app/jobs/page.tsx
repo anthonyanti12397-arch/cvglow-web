@@ -176,7 +176,7 @@ export default function JobsPage() {
 
   if (!user) return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{borderColor: "#8239f5", borderTopColor: "transparent"}}></div>
+      <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{borderColor: "#0A1628", borderTopColor: "transparent"}}></div>
     </div>
   )
 
@@ -188,14 +188,14 @@ export default function JobsPage() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{background: "linear-gradient(135deg, #8f5ff7, #6d1ee8)"}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
               <span className="text-white font-bold text-sm">CV</span>
             </div>
             <span className="font-bold text-gray-900 hidden sm:block">CVGlow</span>
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/dashboard" className="text-gray-500 hover:text-gray-900 transition-colors">Dashboard</Link>
-            <span className="font-medium" style={{color: "#8239f5"}}>Find Jobs</span>
+            <span className="font-medium" style={{color: "#0A1628"}}>Find Jobs</span>
           </nav>
         </div>
       </header>
@@ -226,7 +226,7 @@ export default function JobsPage() {
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{selectedResume.content.jobTitle}</span>
                   {selectedResume.content.skills.slice(0, 3).map(s => (
-                    <span key={s} className="text-xs px-2 py-0.5 rounded-full" style={{background: "#f8f7ff", color: "#6d1ee8"}}>{s}</span>
+                    <span key={s} className="text-xs px-2 py-0.5 rounded-full" style={{background: "#f0f4ff", color: "#0A1628"}}>{s}</span>
                   ))}
                 </div>
               )}
@@ -235,7 +235,7 @@ export default function JobsPage() {
               <Link href={`/resume/${selectedResume?.id}/preview`} className="text-xs font-medium px-3 py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-300 transition-colors">
                 Preview
               </Link>
-              <Link href={`/resume/${selectedResume?.id}`} className="text-xs font-medium px-3 py-2 rounded-lg text-white transition-colors" style={{background: "#8239f5"}}>
+              <Link href={`/resume/${selectedResume?.id}`} className="text-xs font-medium px-3 py-2 rounded-lg text-white transition-colors" style={{background: "#0A1628"}}>
                 Edit CV
               </Link>
             </div>
@@ -251,7 +251,7 @@ export default function JobsPage() {
             { step: '4', label: 'Upload PDF & apply' },
           ].map((s, i) => (
             <div key={s.step} className="flex items-center gap-2 shrink-0">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{background: "#8239f5"}}>{s.step}</div>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{background: "#0A1628"}}>{s.step}</div>
               <span className="text-xs text-gray-600 whitespace-nowrap">{s.label}</span>
               {i < 3 && <span className="text-gray-300 text-xs ml-1">→</span>}
             </div>
@@ -276,7 +276,7 @@ export default function JobsPage() {
                         <div className="text-xs text-gray-400">{board.region}</div>
                       </div>
                     </div>
-                    <span className="text-xs font-medium px-2 py-1 rounded-full" style={{background: "#f8f7ff", color: "#6d1ee8"}}>Popular</span>
+                    <span className="text-xs font-medium px-2 py-1 rounded-full" style={{background: "#f0f4ff", color: "#0A1628"}}>Popular</span>
                   </div>
                   <p className="text-sm text-gray-500 mb-4 leading-relaxed">{board.description}</p>
                   {jobTitle && (
@@ -337,7 +337,7 @@ export default function JobsPage() {
         </div>
 
         {/* Apply Kit */}
-        <div className="rounded-2xl border-2 p-6" style={{borderColor: "#dcd5ff", background: "#f8f7ff"}}>
+        <div className="rounded-2xl border-2 p-6" style={{borderColor: "#dcd5ff", background: "#f0f4ff"}}>
           <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -351,7 +351,7 @@ export default function JobsPage() {
             <button
               onClick={() => setShowKit(!showKit)}
               className="shrink-0 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors text-white"
-              style={{background: "#8239f5"}}
+              style={{background: "#0A1628"}}
             >
               {showKit ? 'Hide Kit' : 'View Apply Kit'}
             </button>
@@ -428,15 +428,15 @@ ${selectedResume.content.email}${selectedResume.content.phone ? '\n' + selectedR
       {/* Hidden resume render for PDF */}
       <div id="hidden-resume-render" style={{display: 'none', position: 'fixed', top: '-9999px', left: 0, width: '794px', background: 'white', padding: '32px'}}>
         <div>
-          <div style={{borderBottom: '2px solid #8239f5', paddingBottom: '16px', marginBottom: '16px'}}>
+          <div style={{borderBottom: '2px solid #0A1628', paddingBottom: '16px', marginBottom: '16px'}}>
             <h1 style={{fontSize: '28px', fontWeight: 'bold', margin: 0}}>{renderContent.fullName}</h1>
-            <p style={{color: '#8239f5', fontWeight: '600', margin: '4px 0'}}>{renderContent.jobTitle}</p>
+            <p style={{color: '#0A1628', fontWeight: '600', margin: '4px 0'}}>{renderContent.jobTitle}</p>
             <p style={{color: '#6b7280', fontSize: '14px', margin: 0}}>{renderContent.email}{renderContent.phone ? ` · ${renderContent.phone}` : ''}</p>
           </div>
           {renderContent.summary && <p style={{fontSize: '14px', color: '#374151', marginBottom: '16px'}}>{renderContent.summary}</p>}
           {renderContent.experiences?.map((exp, i) => (
             <div key={i} style={{marginBottom: '12px'}}>
-              <strong style={{fontSize: '14px'}}>{exp.position}</strong> — <span style={{color: '#8239f5', fontSize: '14px'}}>{exp.company}</span>
+              <strong style={{fontSize: '14px'}}>{exp.position}</strong> — <span style={{color: '#0A1628', fontSize: '14px'}}>{exp.company}</span>
               <div style={{fontSize: '12px', color: '#6b7280'}}>{exp.startDate} – {exp.endDate}</div>
               <div style={{fontSize: '13px', color: '#374151', marginTop: '4px'}}>{exp.description}</div>
             </div>

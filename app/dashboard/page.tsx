@@ -136,7 +136,7 @@ export default function DashboardPage() {
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin"></div>
+      <div className="w-8 h-8 rounded-full border-2 border-[#0A1628] border-t-transparent animate-spin"></div>
     </div>
   )
 
@@ -148,7 +148,7 @@ export default function DashboardPage() {
       <header className="bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #8f5ff7, #6d1ee8)"}}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
               <span className="text-white font-bold text-sm">CV</span>
             </div>
             <span className="font-bold text-gray-900 text-lg hidden sm:block">CVGlow</span>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
             <span className="text-xs text-gray-400 truncate hidden sm:block max-w-[160px]">{user?.email}</span>
             {isPremium ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{background: "#f8f7ff", color: "#6d1ee8"}}>✨ Premium</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0" style={{background: "#f0f4ff", color: "#0A1628"}}>✨ Premium</span>
                 <button
                   onClick={handleCancelSubscription}
                   className="text-xs font-medium px-2.5 py-1 rounded-full border border-red-200 text-red-600 hover:bg-red-50 transition-colors shrink-0"
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             ) : (
-              <Link href="/pricing" className="text-xs font-semibold px-2.5 py-1 rounded-full border shrink-0 transition-colors" style={{borderColor: "#8239f5", color: "#8239f5"}}>Upgrade</Link>
+              <Link href="/pricing" className="text-xs font-semibold px-2.5 py-1 rounded-full border shrink-0 transition-colors" style={{borderColor: "#0A1628", color: "#0A1628"}}>Upgrade</Link>
             )}
             <button onClick={handleLogout} className="text-xs sm:text-sm text-gray-500 hover:text-gray-700 transition-colors shrink-0 border border-gray-200 rounded-lg px-2.5 py-1">Sign Out</button>
           </div>
@@ -198,13 +198,13 @@ export default function DashboardPage() {
             <Link
               href="/resume/create"
               className="flex items-center gap-2 text-white font-medium px-4 py-2 rounded-xl text-sm transition-all"
-              style={{background: "#8239f5"}}
+              style={{background: "#0A1628"}}
             >
               <span className="text-lg leading-none">+</span> New Resume
             </Link>
           )}
           {!isPremium && resumes.length >= 1 && (
-            <Link href="/pricing" className="flex items-center gap-2 font-medium px-4 py-2 rounded-xl text-sm border transition-all" style={{borderColor: "#8239f5", color: "#8239f5"}}>
+            <Link href="/pricing" className="flex items-center gap-2 font-medium px-4 py-2 rounded-xl text-sm border transition-all" style={{borderColor: "#0A1628", color: "#0A1628"}}>
               Upgrade for more
             </Link>
           )}
@@ -216,7 +216,7 @@ export default function DashboardPage() {
             <div className="text-5xl mb-4">📄</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No resumes yet</h3>
             <p className="text-gray-500 mb-6">Create your first resume to get started.</p>
-            <Link href="/resume/create" className="inline-flex items-center gap-2 text-white font-medium px-6 py-3 rounded-xl" style={{background: "#8239f5"}}>
+            <Link href="/resume/create" className="inline-flex items-center gap-2 text-white font-medium px-6 py-3 rounded-xl" style={{background: "#0A1628"}}>
               Create Resume
             </Link>
           </div>
@@ -224,11 +224,11 @@ export default function DashboardPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* New resume card */}
             {(isPremium || resumes.length < 1) && (
-              <Link href="/resume/create" className="border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 hover:border-purple-300 hover:bg-purple-50/50 transition-all group min-h-[180px]">
-                <div className="w-10 h-10 rounded-xl border-2 border-dashed border-gray-300 group-hover:border-purple-400 flex items-center justify-center transition-colors">
-                  <span className="text-xl text-gray-400 group-hover:text-purple-500 transition-colors">+</span>
+              <Link href="/resume/create" className="border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 hover:border-blue-200 hover:bg-slate-50/50 transition-all group min-h-[180px]">
+                <div className="w-10 h-10 rounded-xl border-2 border-dashed border-gray-300 group-hover:border-blue-300 flex items-center justify-center transition-colors">
+                  <span className="text-xl text-gray-400 group-hover:text-[#0A1628] transition-colors">+</span>
                 </div>
-                <span className="text-sm font-medium text-gray-500 group-hover:text-purple-600 transition-colors">New Resume</span>
+                <span className="text-sm font-medium text-gray-500 group-hover:text-[#0A1628] transition-colors">New Resume</span>
               </Link>
             )}
 
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                 {/* Mini preview */}
                 <div className="bg-gray-50 rounded-xl p-3 mb-4 border border-gray-100">
                   <div className="font-semibold text-gray-800 text-sm truncate">{resume.content.fullName}</div>
-                  <div className="text-xs truncate" style={{color: "#8239f5"}}>{resume.content.jobTitle}</div>
+                  <div className="text-xs truncate" style={{color: "#0A1628"}}>{resume.content.jobTitle}</div>
                   <div className="text-xs text-gray-400 mt-1">{resume.content.email}</div>
                   <div className="flex gap-1 mt-2 flex-wrap">
                     {resume.content.skills.slice(0, 3).map(s => (
@@ -266,13 +266,13 @@ export default function DashboardPage() {
                   <Link
                     href={`/resume/${resume.id}`}
                     className="flex-1 text-center text-xs font-medium py-2 rounded-lg text-white transition-colors"
-                    style={{background: "#8239f5"}}
+                    style={{background: "#0A1628"}}
                   >
                     Edit
                   </Link>
                   <Link
                     href="/jobs"
-                    className="px-2.5 py-2 rounded-lg border border-gray-200 text-gray-500 hover:border-purple-300 hover:text-purple-600 transition-colors text-xs font-medium"
+                    className="px-2.5 py-2 rounded-lg border border-gray-200 text-gray-500 hover:border-blue-200 hover:text-[#0A1628] transition-colors text-xs font-medium"
                     title="Find & Apply"
                   >
                     🚀
@@ -290,14 +290,14 @@ export default function DashboardPage() {
         )}
 
         {/* Find & Apply banner */}
-        <div className="mt-8 rounded-2xl p-5 sm:p-6" style={{background: "linear-gradient(135deg, #8239f5, #6d1ee8)"}}>
+        <div className="mt-8 rounded-2xl p-5 sm:p-6" style={{background: "linear-gradient(135deg, #0A1628, #0A1628)"}}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="text-white">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xl">🚀</span>
                 <div className="font-bold text-lg">Ready to apply?</div>
               </div>
-              <div className="text-purple-100 text-sm">
+              <div className="text-slate-200 text-sm">
                 Pick a job board, your CV downloads automatically, and we open the listing — all in one click.
               </div>
               <div className="flex flex-wrap gap-2 mt-3">
@@ -310,8 +310,8 @@ export default function DashboardPage() {
             </div>
             <Link
               href="/jobs"
-              className="shrink-0 flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-purple-50 transition-colors whitespace-nowrap"
-              style={{color: "#6d1ee8"}}
+              className="shrink-0 flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-slate-50 transition-colors whitespace-nowrap"
+              style={{color: "#0A1628"}}
             >
               Find & Apply →
             </Link>
@@ -320,12 +320,12 @@ export default function DashboardPage() {
 
         {/* Upgrade banner for free users */}
         {!isPremium && (
-          <div className="mt-4 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{background: "linear-gradient(135deg, #f8f7ff, #ede8ff)"}}>
+          <div className="mt-4 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{background: "linear-gradient(135deg, #f0f4ff, #ede8ff)"}}>
             <div>
               <div className="font-semibold text-gray-900 mb-1">Unlock unlimited resumes</div>
               <div className="text-sm text-gray-500">Upgrade to Premium for multiple templates, ad-free experience, and more.</div>
             </div>
-            <Link href="/pricing" className="shrink-0 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all text-center" style={{background: "#8239f5"}}>
+            <Link href="/pricing" className="shrink-0 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all text-center" style={{background: "#0A1628"}}>
               Upgrade — $3.99/mo
             </Link>
           </div>
