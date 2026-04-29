@@ -15,7 +15,9 @@ export default function HomePage() {
             <span className="text-xs font-medium px-2 py-0.5 rounded-full ml-1" style={{background: "#fff3cd", color: "#92610a"}}>Beta</span>
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
-            <Link href="/pricing" className="text-gray-500 hover:text-gray-900 text-sm font-medium hidden sm:block transition-colors">Pricing</Link>
+            <Link href="/ats" className="text-gray-500 hover:text-gray-900 text-sm font-medium hidden sm:block transition-colors">Free ATS Check</Link>
+            <Link href="/templates" className="text-gray-500 hover:text-gray-900 text-sm font-medium hidden md:block transition-colors">Templates</Link>
+            <Link href="/pricing" className="text-gray-500 hover:text-gray-900 text-sm font-medium hidden lg:block transition-colors">Pricing</Link>
             <Link href="/auth/login" className="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors">Sign In</Link>
             <Link href="/auth/signup" className="text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap" style={{background: "#0A1628"}}>
               Get Started Free
@@ -53,6 +55,14 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="text-sm text-gray-400 mt-4">No credit card · Free forever plan</p>
+
+          {/* Free ATS CTA */}
+          <div className="mt-8 inline-flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3">
+            <span className="text-sm text-gray-500">Not sure if your resume will pass ATS?</span>
+            <Link href="/ats" className="text-sm font-semibold flex items-center gap-1.5 transition-colors" style={{color: "#FF6B5B"}}>
+              Check for free →
+            </Link>
+          </div>
         </div>
       </section>
 
