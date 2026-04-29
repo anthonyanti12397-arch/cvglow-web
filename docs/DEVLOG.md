@@ -2,6 +2,38 @@
 
 ---
 
+## 2026-04-29 — SEO & Growth Session
+
+### What Was Built
+
+#### ✅ Public ATS Scorer (/ats)
+- No login required — instant score + keyword analysis visible immediately
+- Score card + matched/missing keywords always shown
+- Full strengths/improvements analysis blurred behind a signup gate
+- "Load sample" button with HK Software Engineer example
+- Bottom CTA pushing to resume builder
+- `app/ats/page.tsx` + `app/ats/layout.tsx` (metadata)
+
+#### ✅ SEO Industry Templates
+- `/templates` — index page listing all 9 HK industries
+- `/templates/[industry]` — static-generated pages for: Finance, Technology, Marketing, Legal, Accounting, Healthcare, Hospitality, Logistics, Education
+- Each page: salary range, top employers, sample bullets, top skills, job titles, related templates, ATS tip, sidebar CTA
+- `lib/industries.ts` — central data source, drives both the pages and sitemap
+
+#### ✅ SEO Infrastructure
+- `app/sitemap.ts` — auto-generates XML sitemap covering all static routes + 9 industry slugs
+- `app/robots.ts` — allows public pages, blocks /api, /dashboard, /resume, /auth
+- `app/layout.tsx` — updated root metadata with HK-focused title/description/keywords/OG tags
+
+#### ✅ Homepage Updates
+- Nav: added "Free ATS Check" + "Templates" links
+- Hero: secondary "Check for free →" CTA pointing to /ats
+
+### Commit
+- `5449e6b` — deployed to Vercel
+
+---
+
 ## 2026-04-27 — Growth Features Session
 
 ### What Was Built
