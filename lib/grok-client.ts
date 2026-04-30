@@ -1,4 +1,4 @@
-const GROK_API_KEY = process.env.GROK_API_KEY || '';
+const GROK_API_KEY = process.env.GROK_API_KEY || process.env.XAI_API_KEY || '';
 const GROK_BASE_URL = 'https://api.x.ai/v1';
 
 export interface ATSResult {
@@ -141,7 +141,7 @@ export class GrokClient {
           Authorization: `Bearer ${GROK_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'grok-4.20-reasoning',
+          model: 'grok-4-0709',
           messages: [
             {
               role: 'user',
@@ -229,7 +229,7 @@ ${JSON.stringify(resumeContent, null, 2)}
           Authorization: `Bearer ${GROK_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'grok-4.20-reasoning',
+          model: 'grok-4-0709',
           messages: [
             {
               role: 'user',
@@ -366,7 +366,7 @@ Rules: experiences and educations must be arrays. skills must be an array of str
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROK_API_KEY}` },
       body: JSON.stringify({
-        model: 'grok-4.20-reasoning',
+        model: 'grok-4-0709',
         messages: [{
           role: 'user',
           content: `You are an experienced interviewer at a top company conducting a job interview.
@@ -426,7 +426,7 @@ Return ONLY valid JSON:
           Authorization: `Bearer ${GROK_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'grok-4.20-reasoning',
+          model: 'grok-4-0709',
           messages: [
             {
               role: 'user',
@@ -482,7 +482,7 @@ Return ONLY valid JSON:
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROK_API_KEY}` },
       body: JSON.stringify({
-        model: 'grok-4-0709',
+        model: 'grok-3',
         messages: [
           {
             role: 'system',
