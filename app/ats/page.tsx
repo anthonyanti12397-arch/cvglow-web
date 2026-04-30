@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import EarnCreditsModal from '@/components/EarnCreditsModal'
+import { canUseFeature, deductCredits, CREDIT_COSTS } from '@/lib/usage'
 
 const SAMPLE_JD = `We are looking for a Senior Software Engineer to join our team in Hong Kong.
 
@@ -56,9 +58,17 @@ export default function ATSPage() {
   const [result, setResult] = useState<ATSResult | null>(null)
   const [error, setError] = useState('')
   const [showGate, setShowGate] = useState(false)
+  const [showAdModal, setShowAdModal] = useState(false)
 
   const handleScore = async () => {
     if (!resume.trim() || !jd.trim()) return
+
+    // Credit check
+    if (!deductCredits('ats_score')) {
+      setShowAdModal(true)
+      return
+    }
+
     setLoading(true)
     setError('')
     setResult(null)
@@ -67,14 +77,24 @@ export default function ATSPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          resumeContent: { summary: resume },
-          jobTitle: 'Position',
-          jobDescription: jd,
+          resume_content: { summary: resume, raw_text: resume },
+          job_title: 'Position',
+          job_description: jd,
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Scoring failed')
-      setResult(data)
+      // API returns { success, result: { score, verdict, matched_keywords, ... } }
+      // Normalise to camelCase for the UI
+      const r = data.result || data
+      setResult({
+        score: r.score,
+        verdict: r.verdict,
+        matchedKeywords: r.matchedKeywords || r.matched_keywords || [],
+        missingKeywords: r.missingKeywords || r.missing_keywords || [],
+        strengths: r.strengths || [],
+        improvements: r.improvements || [],
+      })
       setShowGate(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -96,6 +116,13 @@ export default function ATSPage() {
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <EarnCreditsModal
+        isOpen={showAdModal}
+        featureName="ATS Score check"
+        creditCost={CREDIT_COSTS.ats_score}
+        onEarned={() => { setShowAdModal(false); handleScore() }}
+        onClose={() => setShowAdModal(false)}
+      />
       {/* Nav */}
       <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">

@@ -5,6 +5,8 @@ import { use } from 'react';
 import Link from 'next/link';
 import ResumePreview from '@/components/ResumePreview';
 import { Resume } from '@/lib/types';
+import EarnCreditsModal from '@/components/EarnCreditsModal';
+import { deductCredits, CREDIT_COSTS } from '@/lib/usage';
 
 interface JobData {
   job_title: string;
@@ -54,9 +56,9 @@ export default function CustomizeResumePage({
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [customizations, setCustomizations] = useState<CustomizationRecord[]>(
-    []
-  );
+  const [customizations, setCustomizations] = useState<CustomizationRecord[]>([]);
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [adPendingAction, setAdPendingAction] = useState<'analyze' | 'customize' | null>(null);
 
   // 加载简历
   useEffect(() => {
@@ -87,6 +89,13 @@ export default function CustomizeResumePage({
   async function handleScreenshotUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Credit gate: analyze screenshot costs same as resume_customize
+    if (!deductCredits('resume_customize')) {
+      setAdPendingAction('analyze');
+      setShowAdModal(true);
+      return;
+    }
 
     setError(null);
     setLoading(true);
@@ -129,6 +138,12 @@ export default function CustomizeResumePage({
   // 生成定制简历
   async function generateCustomization() {
     if (!jobData || !resume) return;
+
+    if (!deductCredits('resume_customize')) {
+      setAdPendingAction('customize');
+      setShowAdModal(true);
+      return;
+    }
 
     setError(null);
     setLoading(true);
@@ -187,6 +202,17 @@ export default function CustomizeResumePage({
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <EarnCreditsModal
+        isOpen={showAdModal}
+        featureName="Resume Customization"
+        creditCost={CREDIT_COSTS.resume_customize}
+        onEarned={() => {
+          setShowAdModal(false);
+          if (adPendingAction === 'customize') generateCustomization();
+          setAdPendingAction(null);
+        }}
+        onClose={() => { setShowAdModal(false); setAdPendingAction(null); }}
+      />
       <div className="max-w-6xl mx-auto py-8 px-4">
         {/* 头部 */}
         <div className="mb-8">

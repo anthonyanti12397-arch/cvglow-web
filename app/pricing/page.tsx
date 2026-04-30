@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useToast } from '@/components/Toast'
 
 export default function PricingPage() {
   const [upgrading, setUpgrading] = useState(false)
+  const { show: showToast, toastEl } = useToast()
 
   const handleUpgrade = async () => {
     setUpgrading(true)
@@ -12,8 +14,8 @@ export default function PricingPage() {
       const user = JSON.parse(sessionStorage.getItem('cvglow_user') || '{}')
 
       if (!user.email) {
-        alert('Please sign in first to upgrade')
-        window.location.href = '/auth/login'
+        showToast('Please sign in first to upgrade', 'error')
+        setTimeout(() => { window.location.href = '/auth/login' }, 1000)
         return
       }
 
@@ -30,26 +32,26 @@ export default function PricingPage() {
       const { url, error } = await res.json()
 
       if (error) {
-        alert('Error: ' + error)
+        showToast('Error: ' + error, 'error')
         setUpgrading(false)
         return
       }
 
-      // Redirect to Stripe Checkout with success URL that includes user info
+      // Redirect to Stripe Checkout
       if (url) {
-        // Store the session email temporarily to update on return
         sessionStorage.setItem('stripe_upgrade_email', user.email)
         window.location.href = url
       }
     } catch (err) {
       console.error('Upgrade error:', err)
-      alert('Payment error. Please try again.')
+      showToast('Payment error. Please try again.', 'error')
       setUpgrading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-white">
+      {toastEl}
       {/* Nav */}
       <nav className="border-b border-gray-100 bg-white">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -109,7 +111,7 @@ export default function PricingPage() {
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{background: "rgba(255,255,255,0.2)"}}>Most Popular</span>
                   </div>
                   <div className="text-4xl font-bold mt-2">$3.99<span className="text-base font-normal text-slate-300">/month</span></div>
-                  <div className="text-slate-300 text-sm mt-1">That&apos;s less than a cup of coffee ☕</div>
+                  <div className="text-slate-300 text-sm mt-1">3-day free trial · Then $3.99/mo · Cancel anytime</div>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {[
@@ -132,9 +134,9 @@ export default function PricingPage() {
                   className="w-full bg-white font-bold py-3 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-70"
                   style={{color: "#0A1628"}}
                 >
-                  {upgrading ? 'Redirecting to payment...' : 'Upgrade to Premium'}
+                  {upgrading ? 'Redirecting to payment...' : 'Start Free Trial →'}
                 </button>
-                <p className="text-xs text-slate-300 text-center mt-3">Cancel anytime · No hidden fees</p>
+                <p className="text-xs text-slate-300 text-center mt-3">3 days free · No charge until trial ends · Cancel anytime</p>
               </div>
             </div>
           </div>
@@ -145,7 +147,7 @@ export default function PricingPage() {
             <div className="space-y-4">
               {[
                 { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time. You'll keep access until the end of your billing period." },
-                { q: "Is there a free trial?", a: "Our Free plan lets you create 1 resume with full features. Try it before upgrading." },
+                { q: "Is there a free trial?", a: "Yes — Premium comes with a 3-day free trial. You won't be charged until the trial ends, and you can cancel anytime before that." },
                 { q: "What payment methods do you accept?", a: "We accept all major credit cards (Visa, Mastercard, Amex) via Stripe's secure payment gateway." },
                 { q: "Is my data secure?", a: "Yes. All data is encrypted and stored securely. We never share your personal information." },
               ].map(item => (

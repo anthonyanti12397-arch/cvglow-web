@@ -3,6 +3,8 @@
 import { useState, useEffect, use } from 'react'
 import Link from 'next/link'
 import { Resume } from '@/lib/types'
+import EarnCreditsModal from '@/components/EarnCreditsModal'
+import { deductCredits, CREDIT_COSTS } from '@/lib/usage'
 
 const DEMO_RESUME = {
   id: 'resume-001', user_id: 'demo', title: 'Demo',
@@ -39,6 +41,7 @@ export default function CoverLetterPage({ params }: { params: Promise<{ id: stri
   const [saved, setSaved] = useState<SavedLetter[]>([])
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'generate' | 'history'>('generate')
+  const [showAdModal, setShowAdModal] = useState(false)
 
   useEffect(() => {
     if (id === 'demo' || id === 'resume-001') { setResume(DEMO_RESUME as Resume); return }
@@ -54,6 +57,12 @@ export default function CoverLetterPage({ params }: { params: Promise<{ id: stri
 
   async function generate() {
     if (!resume || !jobTitle || !jobDesc) return
+
+    if (!deductCredits('cover_letter')) {
+      setShowAdModal(true)
+      return
+    }
+
     setError('')
     setLoading(true)
     try {
@@ -113,6 +122,13 @@ export default function CoverLetterPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <EarnCreditsModal
+        isOpen={showAdModal}
+        featureName="Cover Letter"
+        creditCost={CREDIT_COSTS.cover_letter}
+        onEarned={() => { setShowAdModal(false); generate() }}
+        onClose={() => setShowAdModal(false)}
+      />
       {/* Toolbar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">

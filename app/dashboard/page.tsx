@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Resume } from '@/lib/types'
+import { useToast } from '@/components/Toast'
+import CreditsBar from '@/components/CreditsBar'
 
 const DEMO_RESUMES: Resume[] = [
   {
@@ -37,6 +39,7 @@ interface User {
 
 export default function DashboardPage() {
   const router = useRouter()
+  const { show: showToast, toastEl } = useToast()
   const [user, setUser] = useState<User | null>(null)
   const [resumes, setResumes] = useState<Resume[]>([])
   const [loading, setLoading] = useState(true)
@@ -68,7 +71,7 @@ export default function DashboardPage() {
 
       // Show success message
       setTimeout(() => {
-        alert('✨ 恭喜！你已升級到 Premium！')
+        showToast('✨ 恭喜！你已升級到 Premium！', 'success')
       }, 100)
     } else {
       setUser(u)
@@ -97,7 +100,7 @@ export default function DashboardPage() {
 
   const handleCancelSubscription = async () => {
     if (!user?.subscription_id) {
-      alert('No active subscription found')
+      showToast('No active subscription found', 'error')
       return
     }
 
@@ -116,7 +119,7 @@ export default function DashboardPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        alert('Error: ' + data.error)
+        showToast('Error: ' + data.error, 'error')
         return
       }
 
@@ -125,12 +128,13 @@ export default function DashboardPage() {
       sessionStorage.setItem('cvglow_user', JSON.stringify(updatedUser))
       setUser(updatedUser)
 
-      alert(
-        `Subscription canceled. You will have access until ${new Date(data.currentPeriodEnd).toLocaleDateString()}.`
+      showToast(
+        `Subscription canceled. Access until ${new Date(data.currentPeriodEnd).toLocaleDateString()}.`,
+        'info'
       )
     } catch (err) {
       console.error('Cancel error:', err)
-      alert('Failed to cancel subscription. Please try again.')
+      showToast('Failed to cancel subscription. Please try again.', 'error')
     }
   }
 
@@ -144,6 +148,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {toastEl}
       {/* Header */}
       <header className="bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
@@ -174,6 +179,9 @@ export default function DashboardPage() {
       </header>
 
       <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Credits bar for free users */}
+        <CreditsBar />
+
         {/* Quick links */}
         <div className="flex gap-2 mb-6 flex-wrap">
           <Link href="/tracker" className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors hover:bg-gray-50" style={{borderColor: '#e2e8f0', color: '#475569'}}>
@@ -183,6 +191,10 @@ export default function DashboardPage() {
           <Link href="/interview" className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors hover:bg-gray-50" style={{borderColor: '#e2e8f0', color: '#475569'}}>
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
             Interview Simulator
+          </Link>
+          <Link href="/coach" className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors hover:bg-gray-50" style={{borderColor: '#e2e8f0', color: '#475569'}}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+            AI Career Coach
           </Link>
         </div>
 
@@ -326,7 +338,7 @@ export default function DashboardPage() {
               <div className="text-sm text-gray-500">Upgrade to Premium for multiple templates, ad-free experience, and more.</div>
             </div>
             <Link href="/pricing" className="shrink-0 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all text-center" style={{background: "#0A1628"}}>
-              Upgrade — $3.99/mo
+              Try Free for 3 Days →
             </Link>
           </div>
         )}

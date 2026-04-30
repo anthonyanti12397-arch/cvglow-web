@@ -470,4 +470,43 @@ Return ONLY valid JSON:
       throw new Error(`Failed to generate cover letter: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
+
+  /**
+   * AI Career Coach — stateless single-turn chat
+   * Uses grok-3-fast to keep costs low
+   */
+  static async coachChat(
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  ): Promise<string> {
+    const response = await fetch(`${GROK_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROK_API_KEY}` },
+      body: JSON.stringify({
+        model: 'grok-4-0709',
+        messages: [
+          {
+            role: 'system',
+            content: `You are an expert career coach specialising in the Hong Kong job market. You help job seekers with:
+- Resume writing and ATS optimisation for HK employers
+- Cover letter strategy and writing
+- Interview preparation (STAR method, common HK employer questions, culture fit)
+- Salary negotiation — always give specific HK$ ranges by industry and seniority
+- Industry-specific hiring: Finance (banks, HF, PE), Tech, Legal, Healthcare, Hospitality
+- Job search strategy on JobsDB, LinkedIn HK, Indeed, recruiters vs direct applications
+- Work visa and MPF considerations for expats
+
+Be direct, specific, and actionable. Cite HK market context where relevant.
+Keep answers concise (150-250 words). Use bullet points for lists.
+If asked something outside career coaching, briefly answer then redirect.`,
+          },
+          ...messages,
+        ],
+        max_tokens: 500,
+      }),
+    })
+
+    if (!response.ok) throw new Error(`Grok API error: ${response.statusText}`)
+    const data = await response.json()
+    return data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response. Please try again.'
+  }
 }

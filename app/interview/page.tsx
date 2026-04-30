@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Resume } from '@/lib/types'
+import EarnCreditsModal from '@/components/EarnCreditsModal'
+import { deductCredits, CREDIT_COSTS } from '@/lib/usage'
 
 interface Message {
   role: 'interviewer' | 'candidate'
@@ -34,6 +36,8 @@ export default function InterviewPage() {
   const [turnCount, setTurnCount] = useState(0)
   const [sessionEnded, setSessionEnded] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
+  const [pendingAnswer, setPendingAnswer] = useState('')
 
   useEffect(() => {
     const stored = JSON.parse(sessionStorage.getItem('cvglow_resumes') || '[]')
@@ -80,6 +84,13 @@ export default function InterviewPage() {
   const sendAnswer = async () => {
     const answer = input.trim()
     if (!answer || loading) return
+
+    if (!deductCredits('interview_turn')) {
+      setPendingAnswer(answer)
+      setShowAdModal(true)
+      return
+    }
+
     setInput('')
 
     const candidateMsg: Message = { role: 'candidate', content: answer, ts: Date.now() }
@@ -199,6 +210,21 @@ export default function InterviewPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <EarnCreditsModal
+        isOpen={showAdModal}
+        featureName="Interview turn"
+        creditCost={CREDIT_COSTS.interview_turn}
+        onEarned={() => {
+          setShowAdModal(false)
+          if (pendingAnswer) {
+            setInput(pendingAnswer)
+            setPendingAnswer('')
+            // re-trigger send after a tick
+            setTimeout(() => sendAnswer(), 50)
+          }
+        }}
+        onClose={() => { setShowAdModal(false); setPendingAnswer('') }}
+      />
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
